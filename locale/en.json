@@ -1,0 +1,6 @@
+{
+  "meta": {
+    "title": "Auto Approval Frame",
+    "description": "A four-tier approval chain: code computes the facts (path / bytes / git state), rules act as deny / ask / AI / allow, allow is a real release only when the ledger is writable, an unavailable review always falls back to a human, sensitive results are masked into placeholders before they reach the model, and every decision writes one hash-chained ledger line."
+  }
+}

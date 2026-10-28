@@ -1,0 +1,17 @@
+<svg width="36" height="36" viewBox="0 0 36 36" fill="none" xmlns="http://www.w3.org/2000/svg">
+  <!-- Plugin artwork follows the harness tile language (36x36 canvas, 4..32 rounded tile,
+       blue gradient light-to-dark top-to-bottom): a white shield with a deep-blue check =
+       "approved behind the gate". The check is cut in the dark blue so it reads at 28px
+       without a second colour, and stays legible on both light and dark themes. -->
+  <rect x="4" y="4" width="28" height="28" rx="8" fill="url(#frame_blue)"/>
+  <g transform="translate(6 5.7) scale(1.5)">
+    <path d="M6.59624 2.14853C7.50155 1.80917 8.49914 1.80919 9.40444 2.14859L13.9245 3.84317V7.11961C13.9245 11.6089 10.5565 13.5975 8.00035 14.5779C5.44423 13.5975 2.07544 11.6089 2.07544 7.11961V3.84317L6.59624 2.14853Z" fill="#FFFFFF"/>
+    <path d="M5.3 8.3l1.8 1.9 3.4-3.7" fill="none" stroke="#2743D0" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"/>
+  </g>
+  <defs>
+    <linearGradient id="frame_blue" x1="18" y1="4" x2="18" y2="32" gradientUnits="userSpaceOnUse">
+      <stop stop-color="#69B9FF"/>
+      <stop offset="1" stop-color="#324DE2"/>
+    </linearGradient>
+  </defs>
+</svg>
