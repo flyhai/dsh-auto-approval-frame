@@ -74,7 +74,7 @@ const state = (label, command, expected, ...reasonParts) => {
 };
 
 // ── paths ───────────────────────────────────────────────────────────────────
-assert.equal(canonicalizeMsys('/c/Users/x'), process.platform === 'win32' ? 'C:\\Users\\x' : '/c/Users/x');
+assert.equal(canonicalizeMsys('/c/ws/x'), process.platform === 'win32' ? 'C:\\ws\\x' : '/c/ws/x');
 assert.ok(isWithin(ws, join(ws, 'sub', 'a.txt')));
 assert.ok(!isWithin(ws, join(root, 'other')));
 console.log('OK paths: containment + msys drive spelling');
