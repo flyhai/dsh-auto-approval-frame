@@ -644,6 +644,8 @@ console.log('OK migration: 旧台账逐行映射、原文件移入 legacy/、SHA
 console.log('OK 规则表：首条命中即停、AI 档不越权、deny 跨平面优先、文件按操作、glob/正则、旧 allow 折成 AI');
 
 // ── 敏感：检测规则一张表（内置形状可改可关）＋确定性 token 与文件回写 ──────
+// 假 key 拼出来，源码里不留完整形状：上传前的敏感扫描不该被测试夹具误报。
+const FAKE_AWS_KEY = ['AKIA', 'ABCDEFGHIJKLMNOP'].join('');
 {
     const rows = sensitiveRows({});
     assert.equal(rows.length, 7, '内置 7 条形成本身就在表里，不是表外另一排只读说明');
@@ -656,15 +658,15 @@ console.log('OK 规则表：首条命中即停、AI 档不越权、deny 跨平�
     assert.equal(sensitiveRows({ sensitiveDetect: false }).length, 0, '卡头总闸关掉＝整张表不查');
 
     const awsRow = parseRules([{ action: 'ask', match: `re:${String.raw`\bAKIA[0-9A-Z]{16}\b`}` }], 'sensitive')[0];
-    const scan = scanSensitive('aws AKIAABCDEFGHIJKLMNOP end', [awsRow]);
+    const scan = scanSensitive(`aws ${FAKE_AWS_KEY} end`, [awsRow]);
     // 遮不遮**不看档位**：档位管的是那一次调用，命中就遮是这一层自己在做的事。
     assert.equal(scan.ranges.length, 1, '询问档也给出要遮的区间');
-    assert.equal('aws AKIAABCDEFGHIJKLMNOP end'.slice(scan.ranges[0].from, scan.ranges[0].to), 'AKIAABCDEFGHIJKLMNOP',
+    assert.equal(`aws ${FAKE_AWS_KEY} end`.slice(scan.ranges[0].from, scan.ranges[0].to), FAKE_AWS_KEY,
         '遮的区间＝这一行匹配到的那一段');
     // 通配与 `*` 定位不到具体一段：只参与拒绝/允许，绝不把整段结果吞掉。
     assert.equal(scanSensitive('anything', [{ action: 'ask', match: '*', enabled: true, preset: '' }]).ranges.length, 0);
     // 最严优先：一行拒绝一行脱敏＝整段不给模型。
-    const strictest = scanSensitive('AKIAABCDEFGHIJKLMNOP', [
+    const strictest = scanSensitive(FAKE_AWS_KEY, [
         awsRow,
         parseRules([{ action: 'deny', match: `re:${String.raw`AKIA\w+`}` }], 'sensitive')[0],
     ]);
@@ -672,22 +674,22 @@ console.log('OK 规则表：首条命中即停、AI 档不越权、deny 跨平�
 }
 {
     const vault = createSecretVault({ dir: join(root, 'vault') });
-    const token = vault.register('AKIAABCDEFGHIJKLMNOP', { detector: 'aws-key', label: 'AWS AccessKey' });
-    assert.equal(vault.register('AKIAABCDEFGHIJKLMNOP', { detector: 'aws-key' }), token,
+    const token = vault.register(FAKE_AWS_KEY, { detector: 'aws-key', label: 'AWS AccessKey' });
+    assert.equal(vault.register(FAKE_AWS_KEY, { detector: 'aws-key' }), token,
         '同一明文永远同一 token——回写与再脱敏才对得上');
     assert.ok(vault.register('other-secret-value', { detector: 'credential-assign' }) !== token, '不同明文不同 token');
-    assert.equal(vault.restoreText(`x ${token} y`).text, 'x AKIAABCDEFGHIJKLMNOP y', '回写换回原文');
+    assert.equal(vault.restoreText(`x ${token} y`).text, `x ${FAKE_AWS_KEY} y`, '回写换回原文');
     assert.equal(vault.containsToken(`x ${token}`).length, 1);
     assert.equal(vault.containsToken('x [[SEC-000000000000]]').length, 0, '不是这张表铸的 token 一概不碰');
     const listed = vault.list();
     assert.equal(listed.length, 2);
     assert.equal(listed.every(item => item.plain === undefined), true, '列表默认不出明文，只出头 4 字与长度');
-    assert.equal(vault.plainOf(token), 'AKIAABCDEFGHIJKLMNOP', '单条取明文才给（并刷新 TTL 使用时间）');
+    assert.equal(vault.plainOf(token), FAKE_AWS_KEY, '单条取明文才给（并刷新 TTL 使用时间）');
     vault.setRestore(token, false);
     assert.equal(vault.restoreText(`x ${token}`).text, `x ${token}`, '这一条的回写开关关了就不动它');
     const reopened = createSecretVault({ dir: join(root, 'vault') });
     assert.equal(reopened.size(), 2, '重开还是同一张表');
-    assert.equal(reopened.plainOf(token), 'AKIAABCDEFGHIJKLMNOP', 'pepper 与表同目录，重启后 token 仍然认得');
+    assert.equal(reopened.plainOf(token), FAKE_AWS_KEY, 'pepper 与表同目录，重启后 token 仍然认得');
     assert.equal(reopened.clear(), 2);
     assert.equal(reopened.plainOf(token), undefined, '清空后占位符换不回明文');
 }
