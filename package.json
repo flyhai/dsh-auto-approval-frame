@@ -1,6 +1,6 @@
 {
   "name": "dsh-auto-approval-frame",
-  "version": "0.6.4",
+  "version": "0.6.5",
   "description": "Four-tier interception and audit frame for DeepSeek Harness: deterministic facts and editable rules (deny / ask / AI / allow), AI review, human approval, automatic masking of secrets in tool results with a local reversible token vault, and every event in a hash-chained, day-segmented audit store",
   "icon": "./assets/icon.svg",
   "type": "module",
