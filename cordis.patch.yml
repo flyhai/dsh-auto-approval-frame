@@ -1,0 +1,68 @@
+# dsh-auto-approval-frame bundle layer.
+#
+# The loader ENTRY is created only by the `insert` row below: the profile
+# `dsh.profile.bundles` array supplies patch layers and does not create entries.
+# Deleting the insert row leaves the plugin with no entry, so it never applies.
+#
+# Permission preset table: a fresh profile carries only the host base presets
+# (read-only / workspace-write / danger-full-access), so the tier this frame
+# manages would not exist and every call would be recorded as delegated. This
+# layer adds `auto-approval` and keeps the base rows. A profile-level
+# `permission` row (applied AFTER this layer; same id replaces the whole config,
+# no deep merge) overrides this table — such a profile must include
+# `auto-approval` itself. The frame reports a missing managed tier at boot and
+# on the settings page (`/frame` → missingGatedPresets).
+#
+# Preset contract: `auto-approval` MUST keep `approval: ask`. With `never` the
+# host emits no approval request and the frame has nothing to gate. Never
+# define a preset named `auto`: hosts >= 0.1.6 reserve it.
+- id: permission
+  config:
+    presets:
+      read-only:
+        sandbox: read-only
+        approval: ask
+      workspace-write:
+        sandbox: workspace-write
+        approval: ask
+      auto-approval:
+        sandbox: danger-full-access
+        approval: ask
+        name: Auto approval
+        description: High-privilege execution with automatic safety classification and approval for risky actions.
+      danger-full-access:
+        sandbox: danger-full-access
+        approval: never
+- insert:
+    - id: auto-approval-frame
+      name: 'dsh-auto-approval-frame'
+      # 出厂层：宿主在跑插件 JS 之前读它，所以这里写死多少就是多少——会盖掉 schema 默认。
+      # 数值格的正本在 `lib/frame/config-defaults.js`，这一份由 test/unit/config-defaults.test.mjs
+      # 逐键对拍（0.6.11 前 `reviewerMaxTokens` 这格写 512，把 schema 的 2048 顶掉了）。
+      config:
+        enabled: true
+        mode: auto
+        gatedPresets:
+          - auto-approval
+        reviewerSource: session
+        reviewerProvider: ''
+        reviewerModel: ''
+        reviewerMaxTokens: 2048
+        reviewerTimeoutMs: 20000
+        evidenceBudget: 16000
+        reviewRules: []
+        commandRules: []
+        fileRules: []
+        networkRules: []
+        toolRules: []
+        sourceRootDirs: []
+        sensitiveRules: []
+        sensitiveDetect: true
+        autoRestoreSecrets: true
+        fastJudge: true
+        fastJudgeMaxTokens: 256
+        fastJudgeTimeoutMs: 3000
+        retentionDays: 90
+        maxTotalBytes: 536870912
+        maxSegmentBytes: 52428800
+        debug: false
