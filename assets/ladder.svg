@@ -1,0 +1,107 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="900" height="768" viewBox="0 0 900 768" role="img" aria-label="拦截梯：一次工具调用从上往下走。L0 只备料、不判定；L1 规则 / L2 快判 / L3 深评 / L4 人工，任一格允许即执行、拒绝即只拦这一次（会话照常）；一层都没说住才到人工；执行完走 L5：跑完命令，命令正常输出的敏感信息换成占位符后，再进入上下文；虚线框是日志审计，包住整条链">
+  <defs>
+    <marker id="arrow" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#94a3b8"/>
+    </marker>
+    <marker id="arrow-pass" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#16a34a"/>
+    </marker>
+    <marker id="arrow-stop" viewBox="0 0 10 10" refX="9" refY="5" markerWidth="6" markerHeight="6" orient="auto">
+      <path d="M0,0 L10,5 L0,10 z" fill="#dc2626"/>
+    </marker>
+  </defs>
+
+  <rect x="0.5" y="0.5" width="899" height="767" rx="14" fill="#ffffff" stroke="#e5e7eb"/>
+
+  <!-- 审计：包住整条链 -->
+  <rect x="36" y="56" width="828" height="696" rx="16" fill="none" stroke="#cbd5e1" stroke-width="1.4" stroke-dasharray="7 6"/>
+  <text x="56" y="82" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="12.5" font-weight="600" fill="#475569">日志审计 · 包住整条链</text>
+  <text x="56" y="100" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="10.5" fill="#94a3b8">每格、每次答复、每次改配置</text>
+  <text x="56" y="116" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="10.5" fill="#94a3b8">都落一行</text>
+
+  <rect x="375" y="16" width="150" height="34" rx="17" fill="#f1f5f9" stroke="#cbd5e1"/>
+  <text x="450" y="38" text-anchor="middle" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="13" font-weight="600" fill="#334155">一次工具调用</text>
+  <line x1="450" y1="50" x2="450" y2="70" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <!-- L0 备料 -->
+  <rect x="280" y="74" width="340" height="64" rx="10" fill="#ffffff" stroke="#64748b" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <rect x="278" y="84" width="4" height="44" rx="2" fill="#64748b"/>
+  <text x="300" y="99" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="14.5" font-weight="600" fill="#0f172a">L0　备料</text>
+  <text x="300" y="121" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="11.5" fill="#475569">看清要动哪些文件、哪些网络；不判定</text>
+
+  <!-- L1 规则 -->
+  <rect x="280" y="166" width="340" height="108" rx="10" fill="#ffffff" stroke="#4f46e5" stroke-width="1.5"/>
+  <rect x="278" y="176" width="4" height="88" rx="2" fill="#4f46e5"/>
+  <text x="300" y="192" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="14.5" font-weight="600" fill="#0f172a">L1　规则</text>
+  <text x="300" y="215" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="11.5" fill="#475569">五张有序表，表内按行序，表间取最严</text>
+  <text x="300" y="237" font-family="ui-monospace,'Cascadia Mono',Consolas,monospace" font-size="11" fill="#6366f1">tool → command → file → network → sensitive</text>
+  <text x="300" y="259" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="11.5" fill="#475569">四档强弱：允许 &lt; AI &lt; 人工 &lt; 拒绝</text>
+
+  <!-- L2 快判 -->
+  <rect x="280" y="302" width="340" height="62" rx="10" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+  <rect x="278" y="312" width="4" height="42" rx="2" fill="#0284c7"/>
+  <text x="300" y="328" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="14.5" font-weight="600" fill="#0f172a">L2　快判</text>
+  <text x="300" y="350" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="11.5" fill="#475569">单段写／删 × 授权 auto ⇒ 允许，否则升级</text>
+
+  <!-- L3 深评 -->
+  <rect x="280" y="394" width="340" height="62" rx="10" fill="#ffffff" stroke="#0284c7" stroke-width="1.5"/>
+  <rect x="278" y="404" width="4" height="42" rx="2" fill="#0284c7"/>
+  <text x="300" y="420" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="14.5" font-weight="600" fill="#0f172a">L3　深评</text>
+  <text x="300" y="442" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="11.5" fill="#475569">一次模型调用 ⇒ 允许 / 拒绝 / 判不了</text>
+
+  <!-- L4 人工 -->
+  <rect x="280" y="486" width="340" height="62" rx="10" fill="#ffffff" stroke="#d97706" stroke-width="1.5"/>
+  <rect x="278" y="496" width="4" height="42" rx="2" fill="#d97706"/>
+  <text x="300" y="512" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="14.5" font-weight="600" fill="#0f172a">L4　人工</text>
+  <text x="300" y="534" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="11.5" fill="#475569">一层都没说住，才落到这里</text>
+
+  <!-- 主干箭头 -->
+  <line x1="450" y1="138" x2="450" y2="164" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <line x1="450" y1="274" x2="450" y2="300" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="458" y="292" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="10.5" font-weight="600" fill="#4f46e5">交模型</text>
+  <line x1="450" y1="364" x2="450" y2="392" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="458" y="384" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="10.5" fill="#64748b">升级</text>
+  <line x1="450" y1="456" x2="450" y2="484" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="458" y="476" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="10.5" fill="#64748b">判不了</text>
+  <line x1="450" y1="548" x2="450" y2="590" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#arrow)"/>
+
+  <!-- 允许轨（左） -->
+  <path d="M280,210 H136 Q120,210 120,226 V603 Q120,619 136,619 H351" fill="none" stroke="#16a34a" stroke-width="1.6" marker-end="url(#arrow-pass)"/>
+  <path d="M280,333 H120" fill="none" stroke="#16a34a" stroke-width="1.6"/>
+  <path d="M280,425 H120" fill="none" stroke="#16a34a" stroke-width="1.6"/>
+  <path d="M280,517 H120" fill="none" stroke="#16a34a" stroke-width="1.6"/>
+  <g font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="10.5" fill="#16a34a">
+    <text x="200" y="203" text-anchor="middle" font-weight="600">允许</text>
+    <text x="200" y="326" text-anchor="middle">允许</text>
+    <text x="200" y="418" text-anchor="middle">允许</text>
+    <text x="200" y="510" text-anchor="middle">允许</text>
+  </g>
+
+  <!-- 拒绝轨（右） -->
+  <path d="M620,210 H719 Q735,210 735,226 V588" fill="none" stroke="#dc2626" stroke-width="1.6" marker-end="url(#arrow-stop)"/>
+  <path d="M620,425 H735" fill="none" stroke="#dc2626" stroke-width="1.6"/>
+  <path d="M620,517 H735" fill="none" stroke="#dc2626" stroke-width="1.6"/>
+  <g font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="10.5" fill="#dc2626">
+    <text x="690" y="203" text-anchor="middle" font-weight="600">拒绝</text>
+    <text x="690" y="418" text-anchor="middle">拒绝</text>
+    <text x="690" y="510" text-anchor="middle">拒绝</text>
+  </g>
+
+  <!-- 终端 -->
+  <rect x="355" y="592" width="190" height="54" rx="10" fill="#f0fdf4" stroke="#bbf7d0"/>
+  <text x="450" y="616" text-anchor="middle" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="14" font-weight="600" fill="#15803d">执行</text>
+  <text x="450" y="636" text-anchor="middle" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="10.5" fill="#15803d">工具正常执行，你看到结果</text>
+  <rect x="650" y="592" width="170" height="54" rx="10" fill="#fef2f2" stroke="#fecaca"/>
+  <text x="735" y="616" text-anchor="middle" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="14" font-weight="600" fill="#b91c1c">拒绝：不执行</text>
+  <text x="735" y="636" text-anchor="middle" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="10.5" fill="#b91c1c">只拦这一次，会话照常</text>
+
+  <line x1="450" y1="646" x2="450" y2="674" stroke="#94a3b8" stroke-width="1.6" marker-end="url(#arrow)"/>
+  <text x="458" y="664" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="10.5" fill="#94a3b8">执行完才走到这里</text>
+
+  <!-- L5 换占位符 -->
+  <rect x="280" y="676" width="340" height="68" rx="10" fill="#ffffff" stroke="#059669" stroke-width="1.5" stroke-dasharray="5 4"/>
+  <rect x="278" y="686" width="4" height="48" rx="2" fill="#059669"/>
+  <text x="300" y="700" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="14.5" font-weight="600" fill="#0f172a">L5</text>
+  <text x="300" y="720" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="11.5" fill="#475569">跑完命令，命令正常输出的敏感信息</text>
+  <text x="300" y="736" font-family="'Segoe UI','Microsoft YaHei',system-ui,sans-serif" font-size="11.5" fill="#475569">换成占位符后，再进入上下文</text>
+</svg>
